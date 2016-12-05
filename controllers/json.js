@@ -49,6 +49,8 @@ module.exports.controller = function(app) {
         .post(function (req, res) {
 
             // Query string parameter "url" which is the complete URL we want to re-route
+            console.log('starting posting');
+
             var url = req.query.url;
 
             // Initialize options
@@ -56,15 +58,25 @@ module.exports.controller = function(app) {
 
             // If "headers" parameter is provided, add it (in case we are authenticating)
             if (req.query.headers) {
+                console.log('headers: ' + req.query.headers);
                 if (!options) options = {};
                 if (!options.headers) options.headers = {};
                 options["headers"] = req.query.headers;
             }
+            else {
+                console.log('no headers');
+            }
 
             if (req.body) {
+                console.log('body: ' + req.body);
                 if (!options) options = {};
                 options["data"] = req.body;
             }
+            else {
+                console.log('no body');
+            }
+
+            console.log('posting');
 
             rest.post(url, options).on('complete', function (data) {
                 console.log(data);
@@ -73,6 +85,8 @@ module.exports.controller = function(app) {
                     data = data.toString('utf8');
                 }
 
+
+                console.log('returning from post');
                 // Returns what is requested, either json or jsonp
                 res.jsonp(data);
             });
