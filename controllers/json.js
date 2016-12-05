@@ -30,12 +30,43 @@ module.exports.controller = function(app) {
 
             // If "headers" parameter is provided, add it (in case we are authenticating)
             if (req.query.headers) {
-                options = {
-                  "headers": req.query.headers
-                };
+                if (!options) options = {};
+                if (!options.headers) options.headers = {};
+                options["headers"] = req.query.headers;
             }
 
             rest.get(url, options).on('complete', function (data) {
+                console.log(data);
+
+                if (Buffer.isBuffer(data)) {
+                    data = data.toString('utf8');
+                }
+
+                // Returns what is requested, either json or jsonp
+                res.jsonp(data);
+            });
+        })
+        .post(function (req, res) {
+
+            // Query string parameter "url" which is the complete URL we want to re-route
+            var url = req.query.url;
+
+            // Initialize options
+            var options = undefined;
+
+            // If "headers" parameter is provided, add it (in case we are authenticating)
+            if (req.query.headers) {
+                if (!options) options = {};
+                if (!options.headers) options.headers = {};
+                options["headers"] = req.query.headers;
+            }
+
+            if (req.body) {
+                if (!options) options = {};
+                options["data"] = req.body;
+            }
+
+            rest.post(url, options).on('complete', function (data) {
                 console.log(data);
 
                 if (Buffer.isBuffer(data)) {
