@@ -79,7 +79,9 @@ module.exports.controller = function(app) {
             console.log('posting');
 
             rest.post(url, options).on('complete', function (data, response) {
-                console.log(JSON.stringify(response.headers));
+                console.log('raw: ' + response.raw);
+                console.log('headers: ' + JSON.stringify(response.headers));
+                console.log('status code: ' + response.statusCode);
 
                 //if (Buffer.isBuffer(data)) {
                 //    data = data.toString('utf8');
