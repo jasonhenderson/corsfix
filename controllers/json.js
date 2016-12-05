@@ -78,13 +78,12 @@ module.exports.controller = function(app) {
 
             console.log('posting');
 
-            rest.post(url, options).on('complete', function (data) {
-                console.log(data);
+            rest.post(url, options).on('complete', function (data, response) {
+                console.log(JSON.stringify(response.headers));
 
-                if (Buffer.isBuffer(data)) {
-                    data = data.toString('utf8');
-                }
-
+                //if (Buffer.isBuffer(data)) {
+                //    data = data.toString('utf8');
+                //}
 
                 console.log('returning from post');
                 // Returns what is requested, either json or jsonp
