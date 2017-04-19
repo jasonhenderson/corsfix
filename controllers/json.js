@@ -26,17 +26,13 @@ module.exports.controller = function(app) {
             var url = req.query.url;
 
             // Initialize options
-            var options = undefined;
+            var options = {};
+            options.headers = {};
 
             // If "headers" query string parameter is provided, add it (in case we are authenticating)
             // DO NOT just take the headers submitted to this page...they may be off
             if (req.query.headers) {
-                if (!options) options = {};
-                if (!options.headers) options.headers = {};
                 options["headers"] = req.query.headers;
-            }
-            else {
-                if (!options.headers) options.headers = {};
             }
 
             // Always override the user agent to look like a browser
