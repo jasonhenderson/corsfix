@@ -28,12 +28,19 @@ module.exports.controller = function(app) {
             // Initialize options
             var options = undefined;
 
-            // If "headers" parameter is provided, add it (in case we are authenticating)
+            // If "headers" query string parameter is provided, add it (in case we are authenticating)
+            // DO NOT just take the headers submitted to this page...they may be off
             if (req.query.headers) {
                 if (!options) options = {};
                 if (!options.headers) options.headers = {};
                 options["headers"] = req.query.headers;
             }
+            else {
+                if (!options.headers) options.headers = {};
+            }
+
+            // Always override the user agent to look like a browser
+            options.headers["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36";
 
             rest.get(url, options).on('complete', function (data) {
                 console.log(data);
@@ -49,40 +56,29 @@ module.exports.controller = function(app) {
         .post(function (req, res) {
 
             // Query string parameter "url" which is the complete URL we want to re-route
-            console.log('starting posting');
-
             var url = req.query.url;
 
             // Initialize options
-            var options = undefined;
+            var options = {};
+            options.headers = {};
 
             // If "headers" parameter is provided, add it (in case we are authenticating)
             if (req.query.headers) {
-                console.log('headers: ' + req.query.headers);
-                if (!options) options = {};
-                if (!options.headers) options.headers = {};
                 options["headers"] = req.query.headers;
             }
-            else {
-                console.log('no headers');
-            }
 
+            // Always override the user agent to look like a browser
+            options.headers["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36";
+
+            // Set the body
             if (req.body) {
-                console.log('body: ' + req.body);
                 if (!options) options = {};
                 options["data"] = req.body;
-            }
-            else {
-                console.log('no body');
             }
 
             console.log('posting');
 
             rest.post(url, options).on('complete', function (data, response) {
-                console.log('raw: ' + response.raw);
-                console.log('headers: ' + JSON.stringify(response.headers));
-                console.log('status code: ' + response.statusCode);
-
                 //if (Buffer.isBuffer(data)) {
                 //    data = data.toString('utf8');
                 //}
